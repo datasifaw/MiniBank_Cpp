@@ -28,6 +28,7 @@ Compte::Compte(const std::string& id,
 }
 
 
+
 // Retourne l'identifiant du compte
 std::string Compte::getIdentifiant() const {
     return identifiant;
