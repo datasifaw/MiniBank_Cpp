@@ -30,3 +30,19 @@
 *.exe
 *.out
 *.app
+
+
+
+# Executables et fichiers generes
+*.exe
+*.o
+*.obj
+/build/
+
+# Donnees locales de MiniBank
+/data/*
+!/data/.gitkeep
+
+# Fichiers temporaires
+*.tmp
+*.log
