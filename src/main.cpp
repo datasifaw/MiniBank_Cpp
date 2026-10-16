@@ -1,40 +1,46 @@
 
 #include <iostream>
-// Créer et tester notre premier objet Compte
-#include "Compte.h"
+#include <limits>
+
+// NOUVEAU : inclusion de notre classe Banque
+#include "Banque.h"
 
 int main() {
 
+    // ==========================================
+    // 1. INITIALISATION DE LA BANQUE
+    // ==========================================
 
-    // Créer et tester notre premier objet Compte
+    // NOUVEAU : creation d'un objet Banque.
+    // Il contiendra les comptes bancaires fictifs.
+    // Pour le moment, aucun compte n'est ajoute.
+    Banque banque;
 
-    
-    // Creation du premier compte fictif
-    Compte compteAlice("MB-0001", "Said Tech", 50000);
+    // NOUVEAU : afficher le nombre de comptes.
+    std::cout << "Initialisation de MiniBank..." << std::endl;
 
-    // Affichage des informations du compte
-    std::cout << "\n=== PREMIER COMPTE BANCAIRE ===" << std::endl;
-    std::cout << "Identifiant : " << compteAlice.getIdentifiant() << std::endl;
-    std::cout << "Titulaire   : " << compteAlice.getTitulaire() << std::endl;
-
-    std::int64_t solde = compteAlice.getSoldeCentimes();
-
-    std::cout << "Solde       : "
-              << solde / 100 << "."
-              << (solde % 100 < 10 ? "0" : "")
-              << solde % 100 << " EUR"
+    std::cout << "Nombre de comptes : "
+              << banque.nombreComptes()
               << std::endl;
 
+    // ==========================================
+    // 2. MENU PRINCIPAL
+    // ==========================================
 
-
-    int choix;
+    int choix = -1;
 
     do {
-        std::cout << "\n========================================" << std::endl;
-        std::cout << "              MINIBANK C++              " << std::endl;
-        std::cout << "========================================" << std::endl;
 
-        std::cout << "\n1. Creer un compte " << std::endl;
+        std::cout << "\n========================================"
+                  << std::endl;
+
+        std::cout << "              MINIBANK C++              "
+                  << std::endl;
+
+        std::cout << "========================================"
+                  << std::endl;
+
+        std::cout << "\n1. Creer un compte" << std::endl;
         std::cout << "2. Consulter un compte" << std::endl;
         std::cout << "3. Deposer de l'argent" << std::endl;
         std::cout << "4. Retirer de l'argent" << std::endl;
@@ -45,23 +51,47 @@ int main() {
         std::cout << "0. Quitter" << std::endl;
 
         std::cout << "\nVotre choix : ";
+
+        // ==========================================
+        // 3. VALIDATION DE LA SAISIE
+        // ==========================================
+
         if (!(std::cin >> choix)) {
+
+            // Fin de la saisie (Ctrl+Z puis Entree
+            // sous Windows, par exemple).
             if (std::cin.eof()) {
-                std::cout << "\nFin de la saisie." << std::endl;
+                std::cout << "\nFin de la saisie."
+                          << std::endl;
                 break;
             }
 
+            // Nettoyer une saisie invalide.
             std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            std::cout << "Erreur : entrez un nombre valide." << std::endl;
+
+            std::cin.ignore(
+                std::numeric_limits<std::streamsize>::max(),
+                '\n'
+            );
+
+            std::cout << "Erreur : entrez un nombre valide."
+                      << std::endl;
+
             continue;
         }
 
+        // ==========================================
+        // 4. TRAITEMENT DES CHOIX
+        // ==========================================
+
         switch (choix) {
+
             case 0:
                 std::cout << "Au revoir !" << std::endl;
                 break;
 
+            // Les fonctionnalites bancaires seront
+            // integrees progressivement.
             case 1:
             case 2:
             case 3:
@@ -70,11 +100,14 @@ int main() {
             case 6:
             case 7:
             case 8:
-                std::cout << "Fonctionnalite a venir !" << std::endl;
+                std::cout << "Fonctionnalite a venir !"
+                          << std::endl;
                 break;
 
             default:
-                std::cout << "Choix invalide !" << std::endl;
+                std::cout << "Choix invalide !"
+                          << std::endl;
+                break;
         }
 
     } while (choix != 0);
