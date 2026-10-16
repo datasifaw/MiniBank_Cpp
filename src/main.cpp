@@ -1,7 +1,31 @@
 
 #include <iostream>
+// Créer et tester notre premier objet Compte
+#include "Compte.h"
 
 int main() {
+
+
+    // Créer et tester notre premier objet Compte
+
+    
+    // Creation du premier compte fictif
+    Compte compteAlice("MB-0001", "Said Tech", 50000);
+
+    // Affichage des informations du compte
+    std::cout << "\n=== PREMIER COMPTE BANCAIRE ===" << std::endl;
+    std::cout << "Identifiant : " << compteAlice.getIdentifiant() << std::endl;
+    std::cout << "Titulaire   : " << compteAlice.getTitulaire() << std::endl;
+
+    std::int64_t solde = compteAlice.getSoldeCentimes();
+
+    std::cout << "Solde       : "
+              << solde / 100 << "."
+              << (solde % 100 < 10 ? "0" : "")
+              << solde % 100 << " EUR"
+              << std::endl;
+
+
 
     int choix;
 
