@@ -10,7 +10,7 @@ int main() {
         std::cout << "              MINIBANK C++              " << std::endl;
         std::cout << "========================================" << std::endl;
 
-        std::cout << "\n1. Creer un compte" << std::endl;
+        std::cout << "\n1. Creer un compte " << std::endl;
         std::cout << "2. Consulter un compte" << std::endl;
         std::cout << "3. Deposer de l'argent" << std::endl;
         std::cout << "4. Retirer de l'argent" << std::endl;
