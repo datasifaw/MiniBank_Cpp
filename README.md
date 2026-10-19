@@ -326,4 +326,4 @@ Le dépôt est public, mais cela ne signifie pas automatiquement que son code pe
 
 Dernière étape technique validée : **3.5.1 — Préparation de `main.cpp` pour la classe `Banque`.**
 
-Prochaine étape prévue : **3.5.2 — Création d'un compte depuis le menu interactif.**
+Prochaine étape prévue : **3.5.2 : Création d'un compte depuis le menu interactif !!**
