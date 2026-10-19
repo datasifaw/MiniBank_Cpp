@@ -7,57 +7,64 @@
 #include <cstddef>
 #include <cstdint>
 
-// NOUVEAU : bibliotheque pour le compteur d'identifiants
-#include <cstdint>
-
 #include "Compte.h"
 
 class Banque {
 
 private:
-    // Collection des comptes bancaires
+    // Collection des comptes bancaires fictifs.
     std::vector<Compte> comptes;
 
-    // ==========================================
-    // NOUVEAU : GENERATION DES IDENTIFIANTS
-    // ==========================================
-
-    // Prochain numero disponible
+    // Compteur utilise pour generer les identifiants.
     std::uint64_t prochainNumero = 1;
 
-    // Generer un identifiant unique
+    // Generer un identifiant disponible.
     std::string genererIdentifiant();
 
 public:
 
-    // Methode existante : conserver pour les tests
+    // Ajouter un compte avec un identifiant fourni.
+    // Cette methode est conservee pour compatibilite.
     bool ajouterCompte(
         const std::string& id,
         const std::string& titulaire,
         std::int64_t soldeInitialCentimes
     );
 
-    // ==========================================
-    // NOUVEAU : CREATION AUTOMATIQUE
-    // ==========================================
-
-    // Cree un compte et retourne son identifiant.
+    // Creer un compte avec un identifiant automatique.
     // Retourne une chaine vide si la creation echoue.
     std::string creerCompte(
         const std::string& titulaire,
         std::int64_t soldeInitialCentimes
     );
 
-    // Rechercher un compte modifiable
+    // Rechercher un compte modifiable.
     Compte* rechercherCompte(const std::string& id);
 
-    // Rechercher un compte en lecture seule
+    // Rechercher un compte en lecture seule.
     const Compte* rechercherCompte(
         const std::string& id
     ) const;
 
-    // Obtenir le nombre total de comptes
+    // Obtenir le nombre total de comptes.
     std::size_t nombreComptes() const;
+
+    // ==========================================
+    // NOUVEAU : VIREMENT ENTRE DEUX COMPTES
+    // ==========================================
+
+    // Transferer un montant en centimes du compte
+    // source vers le compte destinataire.
+    //
+    // Retourne true si le virement reussit.
+    // Retourne false si une condition est refusee.
+    //
+    // En cas de refus, aucun solde ne doit changer.
+    bool virer(
+        const std::string& idSource,
+        const std::string& idDestination,
+        std::int64_t montantCentimes
+    );
 };
 
 #endif
