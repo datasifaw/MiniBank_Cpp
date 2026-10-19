@@ -3,6 +3,7 @@
 #include <limits>
 #include <string>
 #include <cstdint>
+#include <vector>
 
 // ==========================================
 // MODULES MINIBANK
@@ -11,14 +12,15 @@
 #include "Banque.h"
 #include "Montant.h"
 
+// NOUVEAU : types et textes des operations.
+#include "Operation.h"
+
 int main() {
 
     // ==========================================
     // 1. INITIALISATION DE LA BANQUE
     // ==========================================
 
-    // Les comptes sont conserves en memoire
-    // pendant l'execution du programme.
     Banque banque;
 
     std::cout << "Initialisation de MiniBank..."
@@ -38,10 +40,8 @@ int main() {
 
         std::cout << "\n========================================"
                   << std::endl;
-
-        std::cout << "              MINIBANK C++              "
+        std::cout << "              MINIBANK C++"
                   << std::endl;
-
         std::cout << "========================================"
                   << std::endl;
 
@@ -82,7 +82,6 @@ int main() {
             continue;
         }
 
-        // Nettoyer le retour a la ligne avant getline().
         std::cin.ignore(
             std::numeric_limits<std::streamsize>::max(),
             '\n'
@@ -94,6 +93,10 @@ int main() {
 
         switch (choix) {
 
+            // ======================================
+            // OPTION 0 : QUITTER
+            // ======================================
+
             case 0: {
 
                 std::cout << "Au revoir !"
@@ -101,24 +104,21 @@ int main() {
                 break;
             }
 
-            // ==========================================
+            // ======================================
             // OPTION 1 : CREER UN COMPTE
-            // ==========================================
+            // ======================================
 
             case 1: {
 
                 std::cout << "\n========================================"
                           << std::endl;
-
                 std::cout << "       CREATION D'UN COMPTE"
                           << std::endl;
-
-                std::cout << "\n========================================"
+                std::cout << "========================================"
                           << std::endl;
 
                 std::string titulaire;
                 std::string montantTexte;
-
                 std::int64_t soldeInitialCentimes = 0;
 
                 std::cout << "\nNom du titulaire : ";
@@ -181,12 +181,10 @@ int main() {
                           << std::endl;
 
                 std::cout << "\nIdentifiant : "
-                          << identifiant
-                          << std::endl;
+                          << identifiant << std::endl;
 
                 std::cout << "Titulaire   : "
-                          << titulaire
-                          << std::endl;
+                          << titulaire << std::endl;
 
                 std::cout << "Solde       : "
                           << Montant::formater(
@@ -201,18 +199,16 @@ int main() {
                 break;
             }
 
-            // ==========================================
+            // ======================================
             // OPTION 2 : CONSULTER UN COMPTE
-            // ==========================================
+            // ======================================
 
             case 2: {
 
                 std::cout << "\n========================================"
                           << std::endl;
-
                 std::cout << "       CONSULTATION D'UN COMPTE"
                           << std::endl;
-
                 std::cout << "========================================"
                           << std::endl;
 
@@ -275,18 +271,16 @@ int main() {
                 break;
             }
 
-            // ==========================================
+            // ======================================
             // OPTION 3 : DEPOT D'ARGENT
-            // ==========================================
+            // ======================================
 
             case 3: {
 
                 std::cout << "\n========================================"
                           << std::endl;
-
                 std::cout << "             DEPOT D'ARGENT"
                           << std::endl;
-
                 std::cout << "========================================"
                           << std::endl;
 
@@ -316,8 +310,10 @@ int main() {
                     break;
                 }
 
-                Compte* compte =
-                    banque.rechercherCompte(
+                const Banque& banqueLecture = banque;
+
+                const Compte* compte =
+                    banqueLecture.rechercherCompte(
                         identifiantDepot
                     );
 
@@ -364,8 +360,13 @@ int main() {
                 std::int64_t ancienSolde =
                     compte->getSoldeCentimes();
 
+                // Depot centralise dans Banque :
+                // le mouvement reussi est historise.
                 bool depotReussi =
-                    compte->deposer(montantCentimes);
+                    banque.deposerSurCompte(
+                        identifiantDepot,
+                        montantCentimes
+                    );
 
                 if (!depotReussi) {
                     std::cout
@@ -407,18 +408,16 @@ int main() {
                 break;
             }
 
-            // ==========================================
+            // ======================================
             // OPTION 4 : RETRAIT D'ARGENT
-            // ==========================================
+            // ======================================
 
             case 4: {
 
                 std::cout << "\n========================================"
                           << std::endl;
-
                 std::cout << "            RETRAIT D'ARGENT"
                           << std::endl;
-
                 std::cout << "========================================"
                           << std::endl;
 
@@ -448,8 +447,10 @@ int main() {
                     break;
                 }
 
-                Compte* compte =
-                    banque.rechercherCompte(
+                const Banque& banqueLecture = banque;
+
+                const Compte* compte =
+                    banqueLecture.rechercherCompte(
                         identifiantRetrait
                     );
 
@@ -496,8 +497,13 @@ int main() {
                 std::int64_t ancienSolde =
                     compte->getSoldeCentimes();
 
+                // Retrait centralise dans Banque :
+                // le mouvement reussi est historise.
                 bool retraitReussi =
-                    compte->retirer(montantCentimes);
+                    banque.retirerDuCompte(
+                        identifiantRetrait,
+                        montantCentimes
+                    );
 
                 if (!retraitReussi) {
                     std::cout
@@ -543,32 +549,23 @@ int main() {
                 break;
             }
 
-            // ==========================================
-            // NOUVEAU : OPTION 5 - EFFECTUER UN VIREMENT
-            // ==========================================
+            // ======================================
+            // OPTION 5 : EFFECTUER UN VIREMENT
+            // ======================================
 
             case 5: {
 
-                // NOUVEAU : titre de l'ecran de virement.
                 std::cout << "\n========================================"
                           << std::endl;
-
                 std::cout << "           VIREMENT BANCAIRE"
                           << std::endl;
-
                 std::cout << "========================================"
                           << std::endl;
 
-                // NOUVEAU : informations a saisir.
                 std::string idSource;
                 std::string idDestination;
                 std::string montantTexte;
-
                 std::int64_t montantCentimes = 0;
-
-                // ======================================
-                // NOUVEAU : SAISIR LE COMPTE SOURCE
-                // ======================================
 
                 std::cout << "\nCompte source       : ";
 
@@ -578,8 +575,6 @@ int main() {
                     return 0;
                 }
 
-                // NOUVEAU : refuser une saisie vide
-                // ou composee uniquement d'espaces.
                 if (idSource.find_first_not_of(
                         " \t\r\n"
                     ) == std::string::npos) {
@@ -590,10 +585,6 @@ int main() {
                         << std::endl;
                     break;
                 }
-
-                // ======================================
-                // NOUVEAU : SAISIR LE DESTINATAIRE
-                // ======================================
 
                 std::cout << "Compte destinataire : ";
 
@@ -617,10 +608,6 @@ int main() {
                     break;
                 }
 
-                // ======================================
-                // NOUVEAU : VERIFIER DEUX COMPTES DISTINCTS
-                // ======================================
-
                 if (idSource == idDestination) {
                     std::cout
                         << "Erreur : le compte source et"
@@ -630,19 +617,10 @@ int main() {
                     break;
                 }
 
-                // ======================================
-                // NOUVEAU : RECHERCHER LES DEUX COMPTES
-                // ======================================
-
-                // NOUVEAU : la consultation du nom
-                // et du solde suffit ici. Le transfert
-                // sera entierement gere par Banque.
                 const Banque& banqueLecture = banque;
 
                 const Compte* source =
-                    banqueLecture.rechercherCompte(
-                        idSource
-                    );
+                    banqueLecture.rechercherCompte(idSource);
 
                 const Compte* destination =
                     banqueLecture.rechercherCompte(
@@ -663,10 +641,6 @@ int main() {
                     break;
                 }
 
-                // ======================================
-                // NOUVEAU : SAISIR LE MONTANT EN EUROS
-                // ======================================
-
                 std::cout << "Montant (EUR)       : ";
 
                 if (!std::getline(
@@ -677,10 +651,6 @@ int main() {
                               << std::endl;
                     return 0;
                 }
-
-                // ======================================
-                // NOUVEAU : CONVERTIR LE MONTANT
-                // ======================================
 
                 bool montantValide =
                     Montant::convertirEnCentimes(
@@ -703,27 +673,14 @@ int main() {
                     break;
                 }
 
-                // ======================================
-                // NOUVEAU : MEMORISER LES SOLDES
-                // ======================================
-
-                // NOUVEAU : conserver les soldes
-                // avant l'operation pour afficher
-                // un bilan clair en cas de succes.
                 const std::int64_t ancienSoldeSource =
                     source->getSoldeCentimes();
 
                 const std::int64_t ancienSoldeDestination =
                     destination->getSoldeCentimes();
 
-                // ======================================
-                // NOUVEAU : EFFECTUER LE VIREMENT
-                // ======================================
-
-                // NOUVEAU : Banque::virer() applique
-                // toutes les regles du transfert.
-                // main.cpp ne debite et ne credite
-                // jamais directement les comptes.
+                // Banque enregistre les deux mouvements
+                // d'historique du virement reussi.
                 bool virementReussi =
                     banque.virer(
                         idSource,
@@ -731,31 +688,19 @@ int main() {
                         montantCentimes
                     );
 
-                // ======================================
-                // NOUVEAU : GERER UN VIREMENT REFUSE
-                // ======================================
-
                 if (!virementReussi) {
-
                     std::cout
                         << "\nErreur : virement refuse."
                         << std::endl;
-
                     std::cout
                         << "Verifiez les soldes et les"
                         << " limites des comptes."
                         << std::endl;
-
                     std::cout
                         << "Aucun montant n'a ete transfere."
                         << std::endl;
-
                     break;
                 }
-
-                // ======================================
-                // NOUVEAU : AFFICHER LE RESULTAT
-                // ======================================
 
                 std::cout
                     << "\nVirement effectue avec succes !"
@@ -802,21 +747,206 @@ int main() {
                 break;
             }
 
-            // ==========================================
-            // OPTIONS NON ENCORE IMPLEMENTEES
-            // ==========================================
+            // ======================================
+            // NOUVEAU : OPTION 6 - HISTORIQUE
+            // ======================================
 
-            case 6:
+            case 6: {
+
+                // NOUVEAU : ecran de consultation.
+                std::cout << "\n========================================"
+                          << std::endl;
+                std::cout << "       HISTORIQUE DES OPERATIONS"
+                          << std::endl;
+                std::cout << "========================================"
+                          << std::endl;
+
+                // NOUVEAU : identifier le compte
+                // dont on veut consulter l'historique.
+                std::string identifiantHistorique;
+
+                std::cout << "\nIdentifiant du compte : ";
+
+                if (!std::getline(
+                        std::cin,
+                        identifiantHistorique
+                    )) {
+                    std::cout << "\nSaisie interrompue."
+                              << std::endl;
+                    return 0;
+                }
+
+                // NOUVEAU : refuser les identifiants
+                // vides ou composes uniquement d'espaces.
+                if (identifiantHistorique.find_first_not_of(
+                        " \t\r\n"
+                    ) == std::string::npos) {
+
+                    std::cout
+                        << "Erreur : l'identifiant ne peut"
+                        << " pas etre vide."
+                        << std::endl;
+                    break;
+                }
+
+                // ==================================
+                // NOUVEAU : VERIFIER LE COMPTE
+                // ==================================
+
+                // La consultation est en lecture seule.
+                const Banque& banqueLecture = banque;
+
+                const Compte* compte =
+                    banqueLecture.rechercherCompte(
+                        identifiantHistorique
+                    );
+
+                if (compte == nullptr) {
+
+                    std::cout
+                        << "Erreur : aucun compte trouve"
+                        << " avec cet identifiant."
+                        << std::endl;
+                    break;
+                }
+
+                // ==================================
+                // NOUVEAU : RECUPERER L'HISTORIQUE
+                // ==================================
+
+                // Cette methode renvoie une copie
+                // des operations du compte uniquement.
+                std::vector<Operation> operations =
+                    banqueLecture.consulterHistorique(
+                        identifiantHistorique
+                    );
+
+                std::cout << "\nTitulaire : "
+                          << compte->getTitulaire()
+                          << std::endl;
+
+                std::cout << "Compte    : "
+                          << compte->getIdentifiant()
+                          << std::endl;
+
+                // ==================================
+                // NOUVEAU : HISTORIQUE VIDE
+                // ==================================
+
+                if (operations.empty()) {
+
+                    std::cout
+                        << "\nAucune operation enregistree."
+                        << std::endl;
+
+                    std::cout
+                        << "Nombre d'operations : 0"
+                        << std::endl;
+
+                    break;
+                }
+
+                // ==================================
+                // NOUVEAU : AFFICHER LES OPERATIONS
+                // ==================================
+
+                // Les lignes ont ete conservees dans
+                // l'ordre de leur enregistrement.
+                for (const Operation& operation : operations) {
+
+                    std::cout << "\n----------------------------"
+                              << std::endl;
+
+                    std::cout << "Operation n. "
+                              << operation.numero
+                              << std::endl;
+
+                    // NOUVEAU : afficher le type
+                    // avec la fonction d'Operation.h.
+                    std::cout << "Type     : "
+                              << typeOperationEnTexte(
+                                     operation.type
+                                 )
+                              << std::endl;
+
+                    // ==================================
+                    // NOUVEAU : SENS DU MOUVEMENT
+                    // ==================================
+
+                    // Depot et virement entrant :
+                    // argent recu sur le compte.
+                    //
+                    // Retrait et virement sortant :
+                    // argent quitte le compte.
+                    bool estEntree =
+                        operation.type == TypeOperation::Depot ||
+                        operation.type ==
+                            TypeOperation::VirementEntrant;
+
+                    // ==================================
+                    // NOUVEAU : COMPTE LIE AU VIREMENT
+                    // ==================================
+
+                    if (operation.type ==
+                        TypeOperation::VirementSortant) {
+
+                        std::cout << "Vers     : "
+                                  << operation.identifiantContrepartie
+                                  << std::endl;
+
+                    } else if (operation.type ==
+                               TypeOperation::VirementEntrant) {
+
+                        std::cout << "Depuis   : "
+                                  << operation.identifiantContrepartie
+                                  << std::endl;
+                    }
+
+                    // ==================================
+                    // NOUVEAU : AFFICHAGE DU MONTANT
+                    // ==================================
+
+                    // Montant::formater() recoit un
+                    // montant positif en centimes.
+                    // Le signe vient du type d'operation.
+                    std::cout << "Montant  : "
+                              << (estEntree ? "+" : "-")
+                              << Montant::formater(
+                                     operation.montantCentimes
+                                 )
+                              << std::endl;
+                }
+
+                std::cout << "\n----------------------------"
+                          << std::endl;
+
+                // NOUVEAU : afficher uniquement le
+                // nombre d'operations de ce compte.
+                std::cout << "Nombre d'operations : "
+                          << operations.size()
+                          << std::endl;
+
+                break;
+            }
+
+            // ======================================
+            // OPTIONS A DEVELOPPER
+            // ======================================
+
             case 7:
-            case 8:
+            case 8: {
+
                 std::cout << "Fonctionnalite a venir !"
                           << std::endl;
                 break;
+            }
 
-            default:
+            default: {
+
                 std::cout << "Choix invalide !"
                           << std::endl;
                 break;
+            }
         }
 
     } while (choix != 0);

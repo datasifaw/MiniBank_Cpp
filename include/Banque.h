@@ -9,62 +9,114 @@
 
 #include "Compte.h"
 
+// NOUVEAU : modele des mouvements bancaires.
+#include "Operation.h"
+
 class Banque {
 
 private:
-    // Collection des comptes bancaires fictifs.
+
+    // Comptes conserves en memoire.
     std::vector<Compte> comptes;
 
-    // Compteur utilise pour generer les identifiants.
+    // Prochain numero pour les identifiants MB-xxxx.
     std::uint64_t prochainNumero = 1;
 
     // Generer un identifiant disponible.
     std::string genererIdentifiant();
 
+    // ==========================================
+    // NOUVEAU : STOCKAGE DE L'HISTORIQUE
+    // ==========================================
+
+    // Chaque element represente une ligne
+    // d'historique appartenant a un compte.
+    std::vector<Operation> historique;
+
+    // Numero attribue a la prochaine ligne.
+    std::uint64_t prochainNumeroOperation = 1;
+
+    // NOUVEAU : verifier la numerotation et
+    // reserver la place pour les futures lignes.
+    //
+    // Cette methode ne modifie aucun solde.
+    bool preparerHistorique(
+        std::size_t nombreOperations
+    );
+
 public:
 
-    // Ajouter un compte avec un identifiant fourni.
-    // Cette methode est conservee pour compatibilite.
+    // ==========================================
+    // GESTION DES COMPTES EXISTANTE
+    // ==========================================
+
     bool ajouterCompte(
         const std::string& id,
         const std::string& titulaire,
         std::int64_t soldeInitialCentimes
     );
 
-    // Creer un compte avec un identifiant automatique.
-    // Retourne une chaine vide si la creation echoue.
     std::string creerCompte(
         const std::string& titulaire,
         std::int64_t soldeInitialCentimes
     );
 
-    // Rechercher un compte modifiable.
-    Compte* rechercherCompte(const std::string& id);
+    Compte* rechercherCompte(
+        const std::string& id
+    );
 
-    // Rechercher un compte en lecture seule.
     const Compte* rechercherCompte(
         const std::string& id
     ) const;
 
-    // Obtenir le nombre total de comptes.
     std::size_t nombreComptes() const;
 
     // ==========================================
-    // NOUVEAU : VIREMENT ENTRE DEUX COMPTES
+    // NOUVEAU : DEPOT AVEC HISTORIQUE
     // ==========================================
 
-    // Transferer un montant en centimes du compte
-    // source vers le compte destinataire.
-    //
-    // Retourne true si le virement reussit.
-    // Retourne false si une condition est refusee.
-    //
-    // En cas de refus, aucun solde ne doit changer.
+    bool deposerSurCompte(
+        const std::string& idCompte,
+        std::int64_t montantCentimes
+    );
+
+    // ==========================================
+    // NOUVEAU : RETRAIT AVEC HISTORIQUE
+    // ==========================================
+
+    bool retirerDuCompte(
+        const std::string& idCompte,
+        std::int64_t montantCentimes
+    );
+
+    // ==========================================
+    // VIREMENT ENTRE DEUX COMPTES
+    // ==========================================
+
+    // NOUVEAU : un virement reussi produira
+    // deux lignes d'historique.
     bool virer(
         const std::string& idSource,
         const std::string& idDestination,
         std::int64_t montantCentimes
     );
+
+    // ==========================================
+    // NOUVEAU : CONSULTATION DE L'HISTORIQUE
+    // ==========================================
+
+    // Retourne les operations du compte demande,
+    // dans leur ordre d'enregistrement.
+    //
+    // Une liste vide signifie qu'aucune operation
+    // n'est trouvee pour cet identifiant.
+    std::vector<Operation> consulterHistorique(
+        const std::string& idCompte
+    ) const;
+
+    // NOUVEAU : nombre total de lignes
+    // d'historique dans la banque.
+    std::size_t nombreOperations() const;
 };
 
 #endif
