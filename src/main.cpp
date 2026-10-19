@@ -17,8 +17,8 @@ int main() {
     // 1. INITIALISATION DE LA BANQUE
     // ==========================================
 
-    // Cet objet conserve les comptes pendant
-    // toute l'execution du programme.
+    // La banque conserve les comptes
+    // pendant l'execution du programme.
     Banque banque;
 
     std::cout << "Initialisation de MiniBank..."
@@ -82,8 +82,8 @@ int main() {
             continue;
         }
 
-        // Nettoyer la fin de la ligne apres le choix.
-        // Indispensable avant d'utiliser getline().
+        // Nettoyer le retour a la ligne
+        // avant les futurs appels a getline().
         std::cin.ignore(
             std::numeric_limits<std::streamsize>::max(),
             '\n'
@@ -96,8 +96,10 @@ int main() {
         switch (choix) {
 
             case 0:
+
                 std::cout << "Au revoir !"
                           << std::endl;
+
                 break;
 
             // ==========================================
@@ -120,38 +122,40 @@ int main() {
 
                 std::int64_t soldeInitialCentimes = 0;
 
-                // Lire le nom complet du titulaire.
                 std::cout << "\nNom du titulaire : ";
 
                 if (!std::getline(std::cin, titulaire)) {
+
                     std::cout << "\nSaisie interrompue."
                               << std::endl;
+
                     return 0;
                 }
 
-                // Refuser un nom vide ou compose
-                // uniquement d'espaces.
+                // Refuser les noms vides
+                // ou composes uniquement d'espaces.
                 if (titulaire.find_first_not_of(
                         " \t\r\n"
                     ) == std::string::npos) {
 
-                    std::cout << "Erreur : le nom du titulaire"
-                              << " ne peut pas etre vide."
-                              << std::endl;
+                    std::cout
+                        << "Erreur : le nom du titulaire"
+                        << " ne peut pas etre vide."
+                        << std::endl;
 
                     break;
                 }
 
-                // Lire le solde initial en euros.
                 std::cout << "Solde initial (EUR) : ";
 
                 if (!std::getline(std::cin, montantTexte)) {
+
                     std::cout << "\nSaisie interrompue."
                               << std::endl;
+
                     return 0;
                 }
 
-                // Convertir les euros en centimes.
                 bool montantValide =
                     Montant::convertirEnCentimes(
                         montantTexte,
@@ -170,8 +174,6 @@ int main() {
                     break;
                 }
 
-                // Creer le compte et recuperer
-                // son identifiant automatique.
                 std::string identifiant =
                     banque.creerCompte(
                         titulaire,
@@ -180,9 +182,10 @@ int main() {
 
                 if (identifiant.empty()) {
 
-                    std::cout << "Erreur : impossible de creer"
-                              << " le compte."
-                              << std::endl;
+                    std::cout
+                        << "Erreur : impossible de creer"
+                        << " le compte."
+                        << std::endl;
 
                     break;
                 }
@@ -212,29 +215,24 @@ int main() {
             }
 
             // ==========================================
-            // NOUVEAU : OPTION 2 - CONSULTER UN COMPTE
+            // OPTION 2 : CONSULTER UN COMPTE
             // ==========================================
 
             case 2: {
 
-                // NOUVEAU : afficher un titre specifique
-                // pour l'ecran de consultation.
                 std::cout << "\n========================================"
                           << std::endl;
 
                 std::cout << "       CONSULTATION D'UN COMPTE"
                           << std::endl;
 
-                std::cout << "\n========================================"
+                std::cout << "========================================"
                           << std::endl;
 
-                // NOUVEAU : stocker l'identifiant saisi.
                 std::string identifiantRecherche;
 
                 std::cout << "\nIdentifiant du compte : ";
 
-                // NOUVEAU : lire toute la ligne pour
-                // eviter les problemes de saisie.
                 if (!std::getline(
                         std::cin,
                         identifiantRecherche
@@ -246,13 +244,100 @@ int main() {
                     return 0;
                 }
 
+                if (identifiantRecherche.find_first_not_of(
+                        " \t\r\n"
+                    ) == std::string::npos) {
+
+                    std::cout
+                        << "Erreur : l'identifiant ne peut"
+                        << " pas etre vide."
+                        << std::endl;
+
+                    break;
+                }
+
+                // Consultation en lecture seule.
+                const Banque& banqueLecture = banque;
+
+                const Compte* compte =
+                    banqueLecture.rechercherCompte(
+                        identifiantRecherche
+                    );
+
+                if (compte == nullptr) {
+
+                    std::cout
+                        << "\nErreur : aucun compte trouve"
+                        << " avec cet identifiant."
+                        << std::endl;
+
+                    break;
+                }
+
+                std::cout << "\nCompte trouve !"
+                          << std::endl;
+
+                std::cout << "\nIdentifiant : "
+                          << compte->getIdentifiant()
+                          << std::endl;
+
+                std::cout << "Titulaire   : "
+                          << compte->getTitulaire()
+                          << std::endl;
+
+                std::cout << "Solde       : "
+                          << Montant::formater(
+                                 compte->getSoldeCentimes()
+                             )
+                          << std::endl;
+
+                break;
+            }
+
+            // ==========================================
+            // NOUVEAU : OPTION 3 - DEPOT D'ARGENT
+            // ==========================================
+
+            case 3: {
+
+                // NOUVEAU : afficher le titre du depot.
+                std::cout << "\n========================================"
+                          << std::endl;
+
+                std::cout << "             DEPOT D'ARGENT"
+                          << std::endl;
+
+                std::cout << "========================================"
+                          << std::endl;
+
+                // NOUVEAU : variables necessaires
+                // pour rechercher le compte et
+                // convertir le montant du depot.
+                std::string identifiantDepot;
+                std::string montantTexte;
+
+                std::int64_t montantCentimes = 0;
+
                 // ======================================
-                // NOUVEAU : VALIDATION DE L'IDENTIFIANT
+                // NOUVEAU : SAISIE DE L'IDENTIFIANT
                 // ======================================
 
-                // Refuser une ligne vide ou constituee
-                // uniquement d'espaces.
-                if (identifiantRecherche.find_first_not_of(
+                std::cout << "\nIdentifiant du compte : ";
+
+                if (!std::getline(
+                        std::cin,
+                        identifiantDepot
+                    )) {
+
+                    std::cout << "\nSaisie interrompue."
+                              << std::endl;
+
+                    return 0;
+                }
+
+                // NOUVEAU : refuser un identifiant vide
+                // ou compose uniquement d'espaces.
+                if (identifiantDepot.find_first_not_of(
                         " \t\r\n"
                     ) == std::string::npos) {
 
@@ -268,26 +353,19 @@ int main() {
                 // NOUVEAU : RECHERCHE DU COMPTE
                 // ======================================
 
-                // Utiliser une reference constante
-                // vers Banque pour obtenir un pointeur
-                // const Compte* en lecture seule.
-                const Banque& banqueLecture = banque;
-
-                const Compte* compte =
-                    banqueLecture.rechercherCompte(
-                        identifiantRecherche
+                // Cette fois, le pointeur est modifiable,
+                // car le depot doit changer le solde.
+                Compte* compte =
+                    banque.rechercherCompte(
+                        identifiantDepot
                     );
 
-                // ======================================
-                // NOUVEAU : COMPTE INTROUVABLE
-                // ======================================
-
-                // nullptr signifie qu'aucun compte
-                // ne correspond a cet identifiant.
+                // NOUVEAU : ne jamais utiliser
+                // le pointeur s'il vaut nullptr.
                 if (compte == nullptr) {
 
                     std::cout
-                        << "\nErreur : aucun compte trouve"
+                        << "Erreur : aucun compte trouve"
                         << " avec cet identifiant."
                         << std::endl;
 
@@ -295,25 +373,109 @@ int main() {
                 }
 
                 // ======================================
-                // NOUVEAU : AFFICHAGE DES INFORMATIONS
+                // NOUVEAU : SAISIE DU MONTANT
                 // ======================================
 
-                std::cout << "\nCompte trouve !"
-                          << std::endl;
+                std::cout << "Montant du depot (EUR) : ";
 
-                // NOUVEAU : utiliser -> pour appeler
-                // les methodes via le pointeur.
-                std::cout << "\nIdentifiant : "
+                if (!std::getline(
+                        std::cin,
+                        montantTexte
+                    )) {
+
+                    std::cout << "\nSaisie interrompue."
+                              << std::endl;
+
+                    return 0;
+                }
+
+                // ======================================
+                // NOUVEAU : CONVERSION EN CENTIMES
+                // ======================================
+
+                bool montantValide =
+                    Montant::convertirEnCentimes(
+                        montantTexte,
+                        montantCentimes
+                    );
+
+                if (!montantValide) {
+
+                    std::cout
+                        << "Erreur : montant invalide."
+                        << std::endl;
+
+                    break;
+                }
+
+                // NOUVEAU : contrairement au solde
+                // initial, un depot doit etre
+                // strictement superieur a zero.
+                if (montantCentimes <= 0) {
+
+                    std::cout
+                        << "Erreur : le depot doit etre"
+                        << " superieur a zero."
+                        << std::endl;
+
+                    break;
+                }
+
+                // ======================================
+                // NOUVEAU : MEMORISER L'ANCIEN SOLDE
+                // ======================================
+
+                std::int64_t ancienSolde =
+                    compte->getSoldeCentimes();
+
+                // ======================================
+                // NOUVEAU : EXECUTER LE DEPOT
+                // ======================================
+
+                // La methode deposer() verifie
+                // notamment le depassement numerique.
+                bool depotReussi =
+                    compte->deposer(montantCentimes);
+
+                if (!depotReussi) {
+
+                    std::cout
+                        << "Erreur : depot refuse."
+                        << std::endl;
+
+                    std::cout
+                        << "Le solde du compte reste"
+                        << " inchange."
+                        << std::endl;
+
+                    break;
+                }
+
+                // ======================================
+                // NOUVEAU : AFFICHAGE DU RESULTAT
+                // ======================================
+
+                std::cout
+                    << "\nDepot effectue avec succes !"
+                    << std::endl;
+
+                std::cout << "\nIdentifiant    : "
                           << compte->getIdentifiant()
                           << std::endl;
 
-                std::cout << "Titulaire   : "
+                std::cout << "Titulaire      : "
                           << compte->getTitulaire()
                           << std::endl;
 
-                // NOUVEAU : le solde est stocke
-                // en centimes et affiche en euros.
-                std::cout << "Solde       : "
+                std::cout << "Ancien solde   : "
+                          << Montant::formater(ancienSolde)
+                          << std::endl;
+
+                std::cout << "Montant depose : "
+                          << Montant::formater(montantCentimes)
+                          << std::endl;
+
+                std::cout << "Nouveau solde  : "
                           << Montant::formater(
                                  compte->getSoldeCentimes()
                              )
@@ -326,15 +488,16 @@ int main() {
             // OPTIONS NON ENCORE IMPLEMENTEES
             // ==========================================
 
-            case 3:
+            // L'option 4 (retrait) reste inactive.
             case 4:
             case 5:
             case 6:
             case 7:
             case 8:
 
-                std::cout << "Fonctionnalite a venir !"
-                          << std::endl;
+                std::cout
+                    << "Fonctionnalite a venir !"
+                    << std::endl;
 
                 break;
 
