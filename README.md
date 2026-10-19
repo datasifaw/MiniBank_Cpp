@@ -322,7 +322,7 @@ Le dépôt est public, mais cela ne signifie pas automatiquement que son code pe
 
 ## 📌 Statut actuel
 
-**MiniBank C++ : projet pédagogique en cours de développement.**
+**MiniBank C++ : projet pédagogique en cours de développement**
 
 Dernière étape technique validée : **3.5.1 — Préparation de `main.cpp` pour la classe `Banque`.**
 
