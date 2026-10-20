@@ -1,12 +1,12 @@
-# MiniBank C++
+# MiniBank C++ 🏦
 
-**MiniBank C++** est un simulateur bancaire pédagogique développé en **C++17** et exécuté dans un terminal.
+**MiniBank C++** est un simulateur bancaire pédagogique développé en **C++17** et utilisable depuis un terminal.
 
-Ce projet permet de mettre en pratique la programmation orientée objet, la gestion de comptes bancaires, la validation des montants monétaires, les collections C++, les tests automatisés et l'organisation d'un projet avec Git et GitHub.
+Le projet permet de pratiquer la programmation orientée objet, les collections de la bibliothèque standard C++, la validation des montants monétaires, les opérations bancaires, les tests automatisés et le versionnement avec Git et GitHub.
 
-MiniBank propose actuellement **six fonctionnalités bancaires actives**, dont les virements entre comptes et la consultation de l'historique des opérations.
+La version actuelle propose **sept fonctionnalités bancaires actives**, de la création de comptes à la consultation de l'historique et à l'affichage de tous les comptes.
 
-**État de la version actuelle : 174 tests automatisés réussis, 0 échec.**
+**Dernier bilan validé : 219 tests réussis, 0 échec, répartis dans huit programmes.**
 
 ## 1. Fonctionnalités
 
@@ -16,89 +16,195 @@ MiniBank propose actuellement **six fonctionnalités bancaires actives**, dont l
 | `2` | Consulter un compte bancaire | Fonctionnelle |
 | `3` | Déposer de l'argent | Fonctionnelle |
 | `4` | Retirer de l'argent | Fonctionnelle |
-| `5` | Effectuer un virement entre deux comptes | Fonctionnelle |
+| `5` | Effectuer un virement entre comptes | Fonctionnelle |
 | `6` | Consulter l'historique d'un compte | Fonctionnelle |
-| `7` | Afficher tous les comptes | À développer |
+| `7` | Afficher tous les comptes bancaires | Fonctionnelle |
 | `8` | Sauvegarder les données | À développer |
 | `0` | Quitter MiniBank | Fonctionnelle |
 
-### Création d'un compte
+### Option 1 — Créer un compte
 
-L'utilisateur saisit :
+L'utilisateur saisit le nom du titulaire et un solde initial exprimé en euros.
 
-- Le nom du titulaire.
-- Le solde initial, en euros.
+MiniBank attribue automatiquement un identifiant tel que `MB-0001`, `MB-0002`, etc.
 
-MiniBank génère automatiquement un identifiant tel que `MB-0001`, `MB-0002`, etc.
+Chaque compte possède :
 
-Chaque compte possède un identifiant unique, un titulaire et un solde stocké en centimes entiers.
+- Un identifiant unique.
+- Un titulaire.
+- Un solde enregistré en centimes entiers.
 
-### Consultation d'un compte
+Un compte nouvellement créé ne génère pas de ligne de dépôt dans l'historique, même lorsque son solde initial est positif.
 
-La consultation permet de retrouver un compte grâce à son identifiant et d'afficher son titulaire ainsi que son solde.
+### Option 2 — Consulter un compte
 
-### Dépôt d'argent
+La consultation permet de retrouver un compte grâce à son identifiant et d'afficher ses informations :
 
-L'utilisateur choisit le compte à créditer et saisit un montant.
+- Identifiant.
+- Titulaire.
+- Solde actuel.
 
-Un dépôt réussi augmente le solde et crée une opération `Depot` dans l'historique.
+Un identifiant inexistant provoque un message d'erreur.
 
-Les montants nuls ou négatifs et les dépassements de la limite numérique sont refusés.
+### Option 3 — Déposer de l'argent
 
-### Retrait d'argent
+L'utilisateur saisit un identifiant et un montant.
 
-L'utilisateur choisit le compte à débiter et saisit un montant.
+Le dépôt doit être strictement positif et ne doit pas provoquer de dépassement numérique du solde.
 
-Un retrait réussi diminue le solde et crée une opération `Retrait` dans l'historique.
+Un dépôt réussi augmente le solde et ajoute une ligne `DEPOT` à l'historique bancaire.
 
-Les montants nuls ou négatifs et les retraits supérieurs au solde disponible sont refusés.
+### Option 4 — Retirer de l'argent
 
-### Virement bancaire
+L'utilisateur saisit un identifiant et un montant.
 
-L'option `5` permet de transférer un montant entre deux comptes existants.
+Le retrait doit être strictement positif et ne peut pas dépasser le solde disponible.
 
-Le virement vérifie notamment :
+Un retrait réussi diminue le solde et ajoute une ligne `RETRAIT` à l'historique bancaire.
+
+### Option 5 — Effectuer un virement
+
+Le virement transfère un montant d'un compte source vers un compte destinataire.
+
+MiniBank vérifie notamment :
 
 - L'existence des deux comptes.
-- La différence entre le compte source et le compte destinataire.
+- La différence entre leurs identifiants.
 - La validité et la positivité du montant.
 - Le solde disponible sur le compte source.
-- L'absence de dépassement numérique sur le compte destinataire.
+- La capacité du compte destinataire à recevoir le montant sans dépassement numérique.
 
-Un virement réussi débite le compte source, crédite le destinataire et crée deux lignes d'historique : un virement sortant et un virement entrant.
+Un virement réussi crée **deux lignes d'historique** :
+
+- `VIREMENT SORTANT` pour le compte source.
+- `VIREMENT ENTRANT` pour le compte destinataire.
+
+Il s'agit de deux écritures représentant un seul transfert d'argent.
 
 Un virement refusé ne doit modifier ni les soldes ni l'historique.
 
-## 2. Historique des opérations bancaires
+### Option 6 — Consulter l'historique
 
-L'option `6` permet de consulter les mouvements enregistrés pour un compte bancaire.
+L'utilisateur saisit l'identifiant du compte à consulter.
 
-Les opérations sont stockées en mémoire et numérotées dans leur ordre d'enregistrement.
+MiniBank affiche les mouvements enregistrés pour ce compte, dans leur ordre chronologique d'enregistrement, avec un numéro d'opération.
+
+Le détail du fonctionnement de l'historique est présenté dans la section 3.
+
+### Option 7 — Afficher tous les comptes
+
+Cette fonctionnalité affiche l'ensemble des comptes enregistrés dans la banque, **sans avoir à saisir leurs identifiants individuellement**.
+
+Pour chaque compte, MiniBank affiche :
+
+- Un numéro d'affichage.
+- L'identifiant bancaire.
+- Le nom du titulaire.
+- Le solde actuel, formaté en euros.
+
+Les comptes sont affichés dans leur **ordre de création**.
+
+La consultation est en lecture seule : elle ne modifie ni les soldes, ni les comptes internes, ni l'historique bancaire.
+
+## 2. Liste de tous les comptes
+
+### Exemple d'utilisation de l'option 7
+
+Supposons que les comptes suivants aient été créés :
+
+| Identifiant | Titulaire | Solde initial |
+|---|---|---:|
+| `MB-0001` | Alice Martin | 500,00 EUR |
+| `MB-0002` | Bob Dupont | 1200,00 EUR |
+
+Après un dépôt de 100 EUR sur le compte d'Alice, un retrait de 50 EUR et un virement de 25 EUR d'Alice vers Bob, l'option `7` affiche :
+
+```text
+Votre choix : 7
+
+========================================
+          LISTE DES COMPTES
+========================================
+
+Compte n. 1
+Identifiant : MB-0001
+Titulaire   : Alice Martin
+Solde       : 525,00 EUR
+
+----------------------------------------
+
+Compte n. 2
+Identifiant : MB-0002
+Titulaire   : Bob Dupont
+Solde       : 1225,00 EUR
+
+----------------------------------------
+
+Nombre total de comptes : 2
+```
+
+### Consultation d'une banque vide
+
+Si aucun compte n'a été créé, l'option `7` affiche :
+
+```text
+========================================
+          LISTE DES COMPTES
+========================================
+
+Aucun compte bancaire enregistre.
+
+Nombre total de comptes : 0
+```
+
+Le programme retourne ensuite au menu principal.
+
+### Fonctionnement technique
+
+La classe `Banque` expose la méthode suivante :
+
+```cpp
+std::vector<Compte> consulterTousLesComptes() const;
+```
+
+Cette méthode retourne une **copie du vecteur de comptes** stocké dans la banque.
+
+Ses principales propriétés sont :
+
+1. **Ordre conservé :** les comptes restent dans leur ordre d'insertion.
+2. **Copie indépendante :** modifier un compte dans la liste retournée ne modifie pas le compte original.
+3. **Lecture seule :** la méthode ne change pas l'état de la banque.
+4. **Banque vide :** la méthode retourne un vecteur vide.
+5. **Soldes actualisés :** une nouvelle consultation reflète les dernières opérations effectuées.
+
+Une copie obtenue avant une opération bancaire ne se met pas automatiquement à jour. Il faut appeler de nouveau `consulterTousLesComptes()` pour obtenir les soldes les plus récents.
+
+Le menu utilise `Montant::formater()` pour afficher les soldes de manière lisible.
+
+## 3. Historique des opérations bancaires
+
+MiniBank conserve les mouvements bancaires dans un historique en mémoire.
+
+Chaque mouvement enregistré possède :
+
+- Un numéro d'ordre.
+- Un type d'opération.
+- L'identifiant du compte concerné.
+- Un montant exprimé en centimes entiers.
+- L'identifiant de l'autre compte lorsqu'il s'agit d'un virement.
 
 ### Types d'opérations
 
-| Type C++ | Affichage | Sens |
+| Type C++ | Affichage | Nature |
 |---|---|---|
 | `TypeOperation::Depot` | `DEPOT` | Entrée d'argent |
 | `TypeOperation::Retrait` | `RETRAIT` | Sortie d'argent |
 | `TypeOperation::VirementSortant` | `VIREMENT SORTANT` | Argent envoyé |
 | `TypeOperation::VirementEntrant` | `VIREMENT ENTRANT` | Argent reçu |
 
-Chaque ligne d'historique contient :
+Le montant est stocké sous forme positive. Le signe `+` ou `-` est déterminé lors de l'affichage selon le type d'opération.
 
-- Un numéro d'ordre.
-- Un type d'opération.
-- L'identifiant du compte concerné.
-- Le montant en centimes entiers.
-- L'identifiant de l'autre compte lorsqu'il s'agit d'un virement.
-
-Le montant est conservé sous forme de valeur positive. Le signe `+` ou `-` est déterminé à l'affichage selon le type de mouvement.
-
-Un virement entre deux comptes produit **deux lignes d'historique**, une pour chaque compte, mais représente un seul transfert d'argent.
-
-### Exemple de consultation
-
-Après la création d'Alice avec 500 EUR, un dépôt de 100 EUR, un retrait de 50 EUR et un virement de 25 EUR vers Bob :
+### Exemple d'historique d'Alice
 
 ```text
 Votre choix : 6
@@ -132,7 +238,7 @@ Montant  : -25,00 EUR
 Nombre d'operations : 3
 ```
 
-Le compte de Bob possède alors une ligne de virement entrant :
+### Exemple d'historique de Bob
 
 ```text
 Titulaire : Bob Dupont
@@ -148,25 +254,33 @@ Montant  : +25,00 EUR
 Nombre d'operations : 1
 ```
 
-La consultation d'un compte sans mouvement affiche un message indiquant qu'aucune opération n'est enregistrée.
+### Règles de l'historique
 
-La consultation d'un identifiant inexistant affiche un message d'erreur.
+- Seules les opérations réussies sont enregistrées.
+- Les opérations refusées n'ajoutent aucune ligne d'historique.
+- Un virement réussi crée deux lignes portant des numéros distincts.
+- Les numéros sont attribués dans l'ordre global d'enregistrement.
+- La création d'un compte avec un solde initial ne crée pas de dépôt.
+- La consultation de l'historique ne modifie pas les soldes.
+- La consultation de la liste des comptes ne modifie pas non plus l'historique.
+- Un compte sans mouvement possède un historique vide.
 
-**Important : l'historique est conservé uniquement en mémoire pendant l'exécution du programme. Il n'est pas sauvegardé sur disque.**
+**Important : l'historique est uniquement conservé en mémoire et disparaît lorsque le programme se termine.**
 
-## 3. Gestion des montants monétaires
+## 4. Gestion des montants monétaires
 
-Les montants sont stockés avec le type `std::int64_t`, sous forme de centimes entiers, plutôt qu'en nombres à virgule flottante.
+MiniBank représente les soldes et les montants avec le type `std::int64_t`, exprimé en centimes entiers.
 
-Par exemple :
+Cette approche évite les imprécisions habituelles des nombres à virgule flottante pour les montants monétaires.
 
-| Montant en euros | Valeur interne |
+| Montant affiché | Valeur interne |
 |---|---:|
 | `10,00 EUR` | `1000` centimes |
 | `25,50 EUR` | `2550` centimes |
 | `100,00 EUR` | `10000` centimes |
+| `525,00 EUR` | `52500` centimes |
 
-Le module `Montant` gère la conversion des saisies et l'affichage.
+Le module `Montant` gère la conversion des saisies et le formatage des valeurs.
 
 Exemples de saisies acceptées :
 
@@ -177,20 +291,21 @@ Exemples de saisies acceptées :
 25.5
 ```
 
-Les formats invalides, les valeurs négatives saisies comme montants d'opération et les valeurs dépassant la capacité numérique sont refusés selon les règles des fonctionnalités concernées.
+Les formats invalides sont refusés. Les règles métier vérifient également la positivité des dépôts, retraits et virements.
 
-## 4. Technologies utilisées
+## 5. Technologies utilisées
 
 - **Langage :** C++17.
-- **Compilateur :** G++ (environnement MSYS2 sous Windows).
+- **Compilateur :** G++ avec MSYS2 sous Windows.
 - **Éditeur :** Visual Studio Code.
 - **Terminal :** PowerShell.
-- **Versionnement :** Git et GitHub Desktop.
-- **Hébergement du code :** GitHub.
+- **Versionnement :** Git.
+- **Application Git :** GitHub Desktop.
+- **Dépôt distant :** GitHub.
 
-Le projet utilise uniquement la bibliothèque standard C++ pour les fonctionnalités présentées.
+Les fonctionnalités présentées utilisent la bibliothèque standard C++.
 
-## 5. Organisation du projet
+## 6. Organisation du projet
 
 ```text
 MiniBank_Cpp/
@@ -214,7 +329,8 @@ MiniBank_Cpp/
 |   |-- test_montant.cpp
 |   |-- test_parcours.cpp
 |   |-- test_virement.cpp
-|   `-- test_historique.cpp
+|   |-- test_historique.cpp
+|   `-- test_liste_comptes.cpp
 |
 |-- data/
 |   `-- .gitkeep
@@ -224,50 +340,83 @@ MiniBank_Cpp/
 `-- README.md
 ```
 
-### Rôle des principaux fichiers
+Les fichiers exécutables `.exe` sont générés lors des compilations, mais ne doivent pas être publiés dans le dépôt Git.
+
+### Rôle des modules
 
 | Fichier | Responsabilité |
 |---|---|
-| `include/Compte.h` et `src/Compte.cpp` | Modéliser un compte, consulter et modifier son solde selon les règles prévues |
-| `include/Banque.h` et `src/Banque.cpp` | Gérer les comptes, générer leurs identifiants, effectuer les opérations bancaires et enregistrer l'historique |
+| `include/Compte.h` et `src/Compte.cpp` | Modéliser un compte et les opérations élémentaires sur son solde |
+| `include/Banque.h` et `src/Banque.cpp` | Gérer les comptes, les identifiants, les mouvements bancaires, l'historique et la consultation de tous les comptes |
 | `include/Montant.h` et `src/Montant.cpp` | Convertir et formater les montants monétaires |
-| `include/Operation.h` | Définir les types et les données d'une opération bancaire |
-| `src/main.cpp` | Afficher le menu et gérer les interactions avec l'utilisateur |
-| `tests/` | Contenir les programmes de tests automatisés |
+| `include/Operation.h` | Définir les types et les informations des opérations |
+| `src/main.cpp` | Proposer le menu interactif et gérer les saisies de l'utilisateur |
+| `tests/` | Contenir les huit programmes de tests automatisés |
 
-### Architecture de l'historique
+### Méthodes principales de Banque
 
-Le modèle `Operation` contient les informations de chaque mouvement.
-
-La classe `Banque` conserve les lignes d'historique dans un `std::vector<Operation>` et expose notamment :
+La classe `Banque` expose notamment :
 
 ```cpp
-deposerSurCompte(...)
-retirerDuCompte(...)
-virer(...)
-consulterHistorique(...)
-nombreOperations()
+std::string creerCompte(
+    const std::string& titulaire,
+    std::int64_t soldeInitialCentimes
+);
+
+std::size_t nombreComptes() const;
+
+std::vector<Compte> consulterTousLesComptes() const;
+
+bool deposerSurCompte(
+    const std::string& idCompte,
+    std::int64_t montantCentimes
+);
+
+bool retirerDuCompte(
+    const std::string& idCompte,
+    std::int64_t montantCentimes
+);
+
+bool virer(
+    const std::string& idSource,
+    const std::string& idDestination,
+    std::int64_t montantCentimes
+);
+
+std::vector<Operation> consulterHistorique(
+    const std::string& idCompte
+) const;
+
+std::size_t nombreOperations() const;
 ```
 
-Les options `3`, `4` et `5` du menu passent par `Banque` pour exécuter les opérations et assurer leur enregistrement.
+Les options `3`, `4` et `5` passent par les méthodes de `Banque` qui enregistrent les mouvements réussis.
 
-L'option `6` consulte l'historique en lecture seule.
+L'option `6` consulte l'historique.
 
-## 6. Compilation et exécution sous Windows
+L'option `7` obtient une copie de la liste des comptes et affiche leur état actuel, sans effectuer de transaction.
+
+## 7. Compiler et exécuter MiniBank sous Windows
 
 ### Prérequis
 
-Disposer de :
+Installer et configurer :
 
 - Visual Studio Code.
 - Un compilateur G++ prenant en charge C++17, par exemple via MSYS2.
 - PowerShell.
 
-Ouvrir le dossier du projet dans Visual Studio Code, puis sélectionner **Terminal → Nouveau terminal**.
+Ouvrir le dossier `MiniBank_Cpp` dans Visual Studio Code, puis sélectionner **Terminal → Nouveau terminal**.
 
-### Compiler MiniBank
+### Se placer dans le projet
 
-Depuis la racine du projet :
+Adapter le chemin si le dossier se trouve à un autre emplacement :
+
+```powershell
+cd "C:\Users\saide\Desktop\ISOSET\SaZ-Projet_Cpp\MiniBank_Cpp"
+```
+
+### Compiler le programme
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude src/main.cpp src/Banque.cpp src/Compte.cpp src/Montant.cpp -o MiniBank.exe
@@ -281,33 +430,39 @@ g++ -std=c++17 -Wall -Wextra -Iinclude src/main.cpp src/Banque.cpp src/Compte.cp
 
 Le menu interactif s'affiche dans le terminal.
 
-Les fichiers d'en-tête `.h` sont inclus par les modules C++ : `Operation.h` ne nécessite pas de fichier `Operation.cpp` supplémentaire.
+Les fichiers d'en-tête `.h` sont inclus par le compilateur via les fichiers sources. Il n'est pas nécessaire de compiler séparément `Operation.h`.
 
-## 7. Exemple de parcours bancaire
+## 8. Exemple de parcours bancaire complet
 
-Dans une même exécution de MiniBank :
+Dans **une seule exécution** de MiniBank :
 
-1. Créer Alice Martin avec un solde initial de `500` EUR. Son identifiant attendu est `MB-0001`.
-2. Créer Bob Dupont avec un solde initial de `1200` EUR. Son identifiant attendu est `MB-0002`.
-3. Déposer `100` EUR sur le compte `MB-0001`.
-4. Retirer `50` EUR du compte `MB-0001`.
-5. Virer `25` EUR de `MB-0001` vers `MB-0002`.
-6. Consulter l'historique d'Alice avec l'option `6` : trois opérations sont affichées.
-7. Consulter l'historique de Bob avec l'option `6` : une opération est affichée.
-8. Consulter les soldes avec l'option `2`.
+1. Choisir l'option `7` pour vérifier que la banque est vide.
+2. Créer Alice Martin avec un solde initial de `500` EUR : identifiant `MB-0001`.
+3. Créer Bob Dupont avec un solde initial de `1200` EUR : identifiant `MB-0002`.
+4. Choisir l'option `7` pour afficher les deux comptes.
+5. Déposer `100` EUR sur `MB-0001`.
+6. Retirer `50` EUR de `MB-0001`.
+7. Virer `25` EUR de `MB-0001` vers `MB-0002`.
+8. Choisir l'option `7` pour afficher les soldes actualisés.
+9. Choisir l'option `6` pour consulter les historiques d'Alice et de Bob.
+10. Choisir l'option `0` pour quitter MiniBank.
 
-Résultat attendu :
+### Résultats attendus
 
-| Compte | Solde final | Nombre d'opérations |
+| Compte | Solde final | Opérations enregistrées |
 |---|---:|---:|
 | Alice (`MB-0001`) | `525,00 EUR` | 3 |
 | Bob (`MB-0002`) | `1225,00 EUR` | 1 |
 
-Les opérations refusées ne doivent pas ajouter de mouvements à l'historique.
+Le virement crée deux lignes d'historique, une sur chaque compte.
 
-## 8. Tests automatisés
+La somme des soldes finaux est de `1750,00 EUR`, après un dépôt externe de 100 EUR et un retrait externe de 50 EUR.
 
-Le projet dispose de **sept programmes de tests**, représentant **174 vérifications réussies et 0 échec** lors de la dernière validation de la phase 3.7.
+## 9. Tests automatisés
+
+MiniBank dispose de **huit programmes de tests automatisés**.
+
+Le dernier contrôle général validé a confirmé **219 tests réussis et 0 échec**.
 
 | Programme | Nombre de vérifications |
 |---|---:|
@@ -318,135 +473,188 @@ Le projet dispose de **sept programmes de tests**, représentant **174 vérifica
 | `test_parcours.cpp` | 33 |
 | `test_virement.cpp` | 33 |
 | `test_historique.cpp` | 55 |
-| **Total** | **174** |
+| `test_liste_comptes.cpp` | 45 |
+| **Total** | **219** |
 
-### Test des comptes
+Les programmes de tests peuvent être compilés et exécutés séparément dans PowerShell.
+
+### 9.1. Tests des comptes — 6 vérifications
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_compte.cpp src/Compte.cpp -o test_compte.exe
 if ($LASTEXITCODE -eq 0) { .\test_compte.exe }
 ```
 
-### Test de la banque
+### 9.2. Tests de la banque — 13 vérifications
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_banque.cpp src/Banque.cpp src/Compte.cpp -o test_banque.exe
 if ($LASTEXITCODE -eq 0) { .\test_banque.exe }
 ```
 
-### Test des identifiants automatiques
+### 9.3. Tests des identifiants — 12 vérifications
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_identifiants.cpp src/Banque.cpp src/Compte.cpp -o test_identifiants.exe
 if ($LASTEXITCODE -eq 0) { .\test_identifiants.exe }
 ```
 
-### Test de la conversion des montants
+### 9.4. Tests des montants — 22 vérifications
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_montant.cpp src/Montant.cpp -o test_montant.exe
 if ($LASTEXITCODE -eq 0) { .\test_montant.exe }
 ```
 
-### Test du parcours bancaire
+### 9.5. Tests du parcours bancaire — 33 vérifications
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_parcours.cpp src/Banque.cpp src/Compte.cpp src/Montant.cpp -o test_parcours.exe
 if ($LASTEXITCODE -eq 0) { .\test_parcours.exe }
 ```
 
-### Test des virements
+### 9.6. Tests des virements — 33 vérifications
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_virement.cpp src/Banque.cpp src/Compte.cpp -o test_virement.exe
 if ($LASTEXITCODE -eq 0) { .\test_virement.exe }
 ```
 
-### Test de l'historique bancaire
+### 9.7. Tests de l'historique — 55 vérifications
 
 ```powershell
 g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_historique.cpp src/Banque.cpp src/Compte.cpp -o test_historique.exe
 if ($LASTEXITCODE -eq 0) { .\test_historique.exe }
 ```
 
-Les tests de l'historique vérifient notamment :
+Ces tests couvrent notamment :
 
-- La création d'une banque avec un historique vide.
 - L'enregistrement des dépôts et retraits réussis.
-- Les deux lignes créées lors d'un virement.
-- L'ordre de numérotation des opérations.
-- Le bon rattachement des mouvements à chaque compte.
-- L'absence de nouvelles lignes pour les opérations refusées.
-- La cohérence des soldes.
-- La consultation sans modification des données.
-- L'indépendance des copies d'historique.
-- Le refus d'un dépôt provoquant un dépassement monétaire.
+- Les deux mouvements associés à un virement.
+- La numérotation des opérations.
+- La consultation de l'historique d'un compte.
+- L'absence d'historique pour les mouvements refusés.
+- La cohérence des soldes et des copies d'historique.
 
-Résultat validé :
+### 9.8. Tests de la liste des comptes — 45 vérifications
+
+```powershell
+g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_liste_comptes.cpp src/Banque.cpp src/Compte.cpp -o test_liste_comptes.exe
+if ($LASTEXITCODE -eq 0) { .\test_liste_comptes.exe }
+```
+
+Ces 45 nouveaux tests vérifient notamment :
+
+- La consultation d'une banque vide.
+- La présence d'un ou plusieurs comptes.
+- L'ordre de création des comptes.
+- Les identifiants et les titulaires.
+- Les soldes initiaux et actualisés.
+- Les soldes après dépôt, retrait et virement.
+- L'indépendance de la copie retournée.
+- Les consultations répétées.
+- L'utilisation sur une référence constante à `Banque`.
+- L'absence de changement des comptes et de l'historique.
+- La cohérence des données après une création refusée.
+
+### Résultat général validé
 
 ```text
-Tests reussis : 174
+Huit programmes de tests
+
+Tests reussis : 219
 Tests echoues : 0
 ```
 
-Ce total correspond à la somme des sept programmes de tests, et non à la sortie d'un seul exécutable.
+Ce bilan correspond à la somme des huit programmes indépendants, et non à la sortie d'un seul programme de tests.
 
-## 9. Règles et limites actuelles
+Les contrôles manuels du menu complètent les tests automatisés.
 
-MiniBank est un projet pédagogique, pas un logiciel destiné à gérer de véritables fonds bancaires.
+## 10. Principes de conception
+
+### Programmation orientée objet
+
+La classe `Compte` représente un compte bancaire individuel.
+
+La classe `Banque` gère les comptes et centralise les opérations bancaires.
+
+### Montants entiers
+
+Les soldes sont stockés en centimes sous forme d'entiers signés 64 bits.
+
+### Consultation par copie
+
+`Banque::consulterTousLesComptes()` et `Banque::consulterHistorique()` retournent des copies indépendantes des collections internes.
+
+### Séparation des responsabilités
+
+- `Compte` représente les informations et le solde d'un compte.
+- `Banque` organise les comptes, les virements et l'historique.
+- `Montant` assure la conversion et l'affichage des sommes.
+- `Operation` décrit un mouvement bancaire.
+- `main.cpp` gère le terminal et les interactions.
+
+### Tests automatisés
+
+Les huit programmes vérifient les comportements attendus et les principales situations d'erreur.
+
+## 11. Règles et limites actuelles
+
+MiniBank est un **projet pédagogique** et non un logiciel bancaire destiné à gérer de véritables fonds.
 
 ### Règles principales
 
-- Les identifiants des comptes sont uniques.
-- Les soldes sont représentés en centimes entiers.
-- Les dépôts et retraits doivent respecter les règles de validation des montants.
-- Un virement ne peut pas être effectué vers le même compte.
-- Un virement ne peut pas dépasser le solde disponible.
-- Les mouvements réussis réalisés par les méthodes bancaires prévues sont enregistrés dans l'historique.
-- La consultation de l'historique ne modifie pas les soldes.
+- Les identifiants sont uniques au sein d'une banque.
+- Les montants sont conservés en centimes entiers.
+- Les dépôts, retraits et virements sont soumis à des validations.
+- Les opérations refusées ne doivent pas modifier les soldes ou l'historique.
+- Les consultations ne créent aucune opération.
+- La liste des comptes respecte l'ordre de création.
 
-### Limites
+### Limites connues
 
-- Les comptes et l'historique sont stockés **uniquement en mémoire**.
-- Les données disparaissent lorsque le programme se termine.
-- Il n'existe pas encore de chargement ni de sauvegarde permanente.
-- Le programme ne gère pas les accès simultanés.
+- Les comptes et les historiques sont stockés **uniquement en mémoire**.
+- Les données sont perdues à la fermeture de MiniBank.
+- Aucune sauvegarde permanente n'est encore disponible.
+- Les numéros des mouvements représentent leur ordre d'enregistrement, sans date ni heure.
+- Le programme n'est pas conçu pour gérer des opérations simultanées.
 - Le mécanisme d'historique ne constitue pas une base de données transactionnelle durable.
-- Les modifications directes d'un `Compte` en dehors des méthodes de `Banque` peuvent contourner l'enregistrement de l'historique.
-- Les lignes d'historique utilisent un numéro d'ordre, sans date ni heure enregistrée.
-- L'ouverture d'un compte avec un solde initial ne crée pas de ligne de dépôt dans l'historique.
+- Les méthodes de modification directe d'un `Compte` restent accessibles et peuvent contourner le journal de `Banque` si elles sont utilisées en dehors des méthodes bancaires prévues.
+- Les copies des comptes nécessitent du temps et de la mémoire supplémentaires lorsque le nombre de comptes augmente.
+- Le programme ne comprend pas encore de mécanisme de connexion ou d'authentification bancaire.
 
-## 10. Feuille de route
+## 12. Feuille de route
 
-### Fonctionnalités terminées
+### Fonctionnalités réalisées
 
-- [x] Modèle des comptes bancaires.
-- [x] Gestion des comptes dans une banque.
-- [x] Identifiants automatiques.
-- [x] Conversion et formatage des montants monétaires.
-- [x] Création et consultation d'un compte.
-- [x] Dépôts et retraits.
-- [x] Virements entre comptes.
-- [x] Modèle des opérations bancaires.
-- [x] Enregistrement des opérations réussies.
-- [x] Consultation de l'historique depuis le menu.
-- [x] Tests automatisés de l'historique.
-- [x] Vérification générale des 174 tests.
+- [x] Modéliser un compte bancaire.
+- [x] Gérer plusieurs comptes dans une banque.
+- [x] Générer automatiquement les identifiants.
+- [x] Convertir et formater les montants.
+- [x] Créer et consulter un compte.
+- [x] Déposer et retirer de l'argent.
+- [x] Effectuer des virements entre comptes.
+- [x] Enregistrer les opérations réussies.
+- [x] Consulter l'historique bancaire.
+- [x] Consulter tous les comptes bancaires.
+- [x] Tester l'indépendance des copies de comptes.
+- [x] Valider les huit programmes de tests.
+- [x] Obtenir 219 tests réussis avec 0 échec.
 
-### Prochaines améliorations
+### Prochaines évolutions
 
-- [ ] **Option 7 :** afficher tous les comptes bancaires.
 - [ ] **Option 8 :** sauvegarder les données sur disque.
-- [ ] Étudier le chargement des comptes et de l'historique lors du démarrage.
-- [ ] Améliorer progressivement l'organisation du code, la validation et les scénarios de tests.
+- [ ] Préparer le chargement des données au démarrage.
+- [ ] Étudier la persistance des comptes et de l'historique.
+- [ ] Renforcer progressivement les validations et les scénarios de tests.
 
-## 11. Dépôt GitHub
+## 13. Dépôt GitHub
 
-Le code source du projet est disponible ici :
+Le projet est disponible dans le dépôt :
 
 [MiniBank_Cpp sur GitHub](https://github.com/datasifaw/MiniBank_Cpp)
 
-Le projet est développé progressivement, avec des tests et des validations avant chaque nouvelle fonctionnalité.
+Les fonctionnalités sont développées progressivement, avec des phases distinctes de conception, d'implémentation, de tests, de documentation et de publication.
 
 ---
 

@@ -11,8 +11,6 @@
 
 #include "Banque.h"
 #include "Montant.h"
-
-// NOUVEAU : types et textes des operations.
 #include "Operation.h"
 
 int main() {
@@ -360,8 +358,6 @@ int main() {
                 std::int64_t ancienSolde =
                     compte->getSoldeCentimes();
 
-                // Depot centralise dans Banque :
-                // le mouvement reussi est historise.
                 bool depotReussi =
                     banque.deposerSurCompte(
                         identifiantDepot,
@@ -497,8 +493,6 @@ int main() {
                 std::int64_t ancienSolde =
                     compte->getSoldeCentimes();
 
-                // Retrait centralise dans Banque :
-                // le mouvement reussi est historise.
                 bool retraitReussi =
                     banque.retirerDuCompte(
                         identifiantRetrait,
@@ -679,8 +673,6 @@ int main() {
                 const std::int64_t ancienSoldeDestination =
                     destination->getSoldeCentimes();
 
-                // Banque enregistre les deux mouvements
-                // d'historique du virement reussi.
                 bool virementReussi =
                     banque.virer(
                         idSource,
@@ -748,12 +740,11 @@ int main() {
             }
 
             // ======================================
-            // NOUVEAU : OPTION 6 - HISTORIQUE
+            // OPTION 6 : CONSULTER L'HISTORIQUE
             // ======================================
 
             case 6: {
 
-                // NOUVEAU : ecran de consultation.
                 std::cout << "\n========================================"
                           << std::endl;
                 std::cout << "       HISTORIQUE DES OPERATIONS"
@@ -761,8 +752,6 @@ int main() {
                 std::cout << "========================================"
                           << std::endl;
 
-                // NOUVEAU : identifier le compte
-                // dont on veut consulter l'historique.
                 std::string identifiantHistorique;
 
                 std::cout << "\nIdentifiant du compte : ";
@@ -776,8 +765,6 @@ int main() {
                     return 0;
                 }
 
-                // NOUVEAU : refuser les identifiants
-                // vides ou composes uniquement d'espaces.
                 if (identifiantHistorique.find_first_not_of(
                         " \t\r\n"
                     ) == std::string::npos) {
@@ -789,11 +776,6 @@ int main() {
                     break;
                 }
 
-                // ==================================
-                // NOUVEAU : VERIFIER LE COMPTE
-                // ==================================
-
-                // La consultation est en lecture seule.
                 const Banque& banqueLecture = banque;
 
                 const Compte* compte =
@@ -802,7 +784,6 @@ int main() {
                     );
 
                 if (compte == nullptr) {
-
                     std::cout
                         << "Erreur : aucun compte trouve"
                         << " avec cet identifiant."
@@ -810,12 +791,6 @@ int main() {
                     break;
                 }
 
-                // ==================================
-                // NOUVEAU : RECUPERER L'HISTORIQUE
-                // ==================================
-
-                // Cette methode renvoie une copie
-                // des operations du compte uniquement.
                 std::vector<Operation> operations =
                     banqueLecture.consulterHistorique(
                         identifiantHistorique
@@ -828,10 +803,6 @@ int main() {
                 std::cout << "Compte    : "
                           << compte->getIdentifiant()
                           << std::endl;
-
-                // ==================================
-                // NOUVEAU : HISTORIQUE VIDE
-                // ==================================
 
                 if (operations.empty()) {
 
@@ -846,12 +817,6 @@ int main() {
                     break;
                 }
 
-                // ==================================
-                // NOUVEAU : AFFICHER LES OPERATIONS
-                // ==================================
-
-                // Les lignes ont ete conservees dans
-                // l'ordre de leur enregistrement.
                 for (const Operation& operation : operations) {
 
                     std::cout << "\n----------------------------"
@@ -861,31 +826,16 @@ int main() {
                               << operation.numero
                               << std::endl;
 
-                    // NOUVEAU : afficher le type
-                    // avec la fonction d'Operation.h.
                     std::cout << "Type     : "
                               << typeOperationEnTexte(
                                      operation.type
                                  )
                               << std::endl;
 
-                    // ==================================
-                    // NOUVEAU : SENS DU MOUVEMENT
-                    // ==================================
-
-                    // Depot et virement entrant :
-                    // argent recu sur le compte.
-                    //
-                    // Retrait et virement sortant :
-                    // argent quitte le compte.
                     bool estEntree =
                         operation.type == TypeOperation::Depot ||
                         operation.type ==
                             TypeOperation::VirementEntrant;
-
-                    // ==================================
-                    // NOUVEAU : COMPTE LIE AU VIREMENT
-                    // ==================================
 
                     if (operation.type ==
                         TypeOperation::VirementSortant) {
@@ -902,13 +852,6 @@ int main() {
                                   << std::endl;
                     }
 
-                    // ==================================
-                    // NOUVEAU : AFFICHAGE DU MONTANT
-                    // ==================================
-
-                    // Montant::formater() recoit un
-                    // montant positif en centimes.
-                    // Le signe vient du type d'operation.
                     std::cout << "Montant  : "
                               << (estEntree ? "+" : "-")
                               << Montant::formater(
@@ -920,8 +863,6 @@ int main() {
                 std::cout << "\n----------------------------"
                           << std::endl;
 
-                // NOUVEAU : afficher uniquement le
-                // nombre d'operations de ce compte.
                 std::cout << "Nombre d'operations : "
                           << operations.size()
                           << std::endl;
@@ -930,10 +871,113 @@ int main() {
             }
 
             // ======================================
-            // OPTIONS A DEVELOPPER
+            // NOUVEAU : OPTION 7 - TOUS LES COMPTES
             // ======================================
 
-            case 7:
+            case 7: {
+
+                // NOUVEAU : afficher la liste des
+                // comptes enregistres dans la banque.
+                std::cout << "\n========================================"
+                          << std::endl;
+
+                std::cout << "          LISTE DES COMPTES"
+                          << std::endl;
+
+                std::cout << "========================================"
+                          << std::endl;
+
+                // ==================================
+                // NOUVEAU : CONSULTATION EN LECTURE SEULE
+                // ==================================
+
+                // L'appel est effectue sur une
+                // reference constante a la banque.
+                const Banque& banqueLecture = banque;
+
+                // NOUVEAU : la methode retourne
+                // une COPIE des comptes internes.
+                //
+                // Aucun solde et aucune operation
+                // d'historique ne sont modifies.
+                const std::vector<Compte> listeComptes =
+                    banqueLecture.consulterTousLesComptes();
+
+                // ==================================
+                // NOUVEAU : GERER UNE BANQUE VIDE
+                // ==================================
+
+                if (listeComptes.empty()) {
+
+                    std::cout
+                        << "\nAucun compte bancaire enregistre."
+                        << std::endl;
+
+                    std::cout
+                        << "\nNombre total de comptes : 0"
+                        << std::endl;
+
+                    break;
+                }
+
+                // ==================================
+                // NOUVEAU : AFFICHER CHAQUE COMPTE
+                // ==================================
+
+                // Le vector preserve l'ordre de
+                // creation des comptes bancaires.
+                std::size_t numeroAffichage = 1;
+
+                for (const Compte& compte : listeComptes) {
+
+                    std::cout
+                        << "\nCompte n. "
+                        << numeroAffichage
+                        << std::endl;
+
+                    std::cout << "Identifiant : "
+                              << compte.getIdentifiant()
+                              << std::endl;
+
+                    std::cout << "Titulaire   : "
+                              << compte.getTitulaire()
+                              << std::endl;
+
+                    // NOUVEAU : Montant::formater()
+                    // convertit les centimes en texte
+                    // lisible avec deux decimales.
+                    std::cout << "Solde       : "
+                              << Montant::formater(
+                                     compte.getSoldeCentimes()
+                                 )
+                              << std::endl;
+
+                    // NOUVEAU : separer les comptes
+                    // pour faciliter la lecture.
+                    std::cout
+                        << "\n----------------------------------------"
+                        << std::endl;
+
+                    ++numeroAffichage;
+                }
+
+                // ==================================
+                // NOUVEAU : AFFICHER LE TOTAL
+                // ==================================
+
+                // Le total provient de la liste
+                // obtenue lors de la consultation.
+                std::cout << "\nNombre total de comptes : "
+                          << listeComptes.size()
+                          << std::endl;
+
+                break;
+            }
+
+            // ======================================
+            // OPTION 8 : A DEVELOPPER
+            // ======================================
+
             case 8: {
 
                 std::cout << "Fonctionnalite a venir !"

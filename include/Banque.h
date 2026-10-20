@@ -8,8 +8,6 @@
 #include <cstdint>
 
 #include "Compte.h"
-
-// NOUVEAU : modele des mouvements bancaires.
 #include "Operation.h"
 
 class Banque {
@@ -26,20 +24,17 @@ private:
     std::string genererIdentifiant();
 
     // ==========================================
-    // NOUVEAU : STOCKAGE DE L'HISTORIQUE
+    // HISTORIQUE DES OPERATIONS BANCAIRES
     // ==========================================
 
-    // Chaque element represente une ligne
-    // d'historique appartenant a un compte.
+    // Lignes d'historique conservees en memoire.
     std::vector<Operation> historique;
 
-    // Numero attribue a la prochaine ligne.
+    // Numero de la prochaine ligne.
     std::uint64_t prochainNumeroOperation = 1;
 
-    // NOUVEAU : verifier la numerotation et
-    // reserver la place pour les futures lignes.
-    //
-    // Cette methode ne modifie aucun solde.
+    // Preparer la place et la numerotation
+    // avant de modifier les soldes.
     bool preparerHistorique(
         std::size_t nombreOperations
     );
@@ -47,7 +42,7 @@ private:
 public:
 
     // ==========================================
-    // GESTION DES COMPTES EXISTANTE
+    // GESTION DES COMPTES
     // ==========================================
 
     bool ajouterCompte(
@@ -72,7 +67,20 @@ public:
     std::size_t nombreComptes() const;
 
     // ==========================================
-    // NOUVEAU : DEPOT AVEC HISTORIQUE
+    // NOUVEAU : CONSULTER TOUS LES COMPTES
+    // ==========================================
+
+    // NOUVEAU : retourner une copie des comptes.
+    //
+    // L'ordre de creation est conserve.
+    // Si la banque est vide, le vector retourne
+    // est egalement vide.
+    //
+    // La methode ne modifie pas la banque.
+    std::vector<Compte> consulterTousLesComptes() const;
+
+    // ==========================================
+    // DEPOT AVEC HISTORIQUE
     // ==========================================
 
     bool deposerSurCompte(
@@ -81,7 +89,7 @@ public:
     );
 
     // ==========================================
-    // NOUVEAU : RETRAIT AVEC HISTORIQUE
+    // RETRAIT AVEC HISTORIQUE
     // ==========================================
 
     bool retirerDuCompte(
@@ -93,8 +101,6 @@ public:
     // VIREMENT ENTRE DEUX COMPTES
     // ==========================================
 
-    // NOUVEAU : un virement reussi produira
-    // deux lignes d'historique.
     bool virer(
         const std::string& idSource,
         const std::string& idDestination,
@@ -102,20 +108,13 @@ public:
     );
 
     // ==========================================
-    // NOUVEAU : CONSULTATION DE L'HISTORIQUE
+    // CONSULTATION DE L'HISTORIQUE
     // ==========================================
 
-    // Retourne les operations du compte demande,
-    // dans leur ordre d'enregistrement.
-    //
-    // Une liste vide signifie qu'aucune operation
-    // n'est trouvee pour cet identifiant.
     std::vector<Operation> consulterHistorique(
         const std::string& idCompte
     ) const;
 
-    // NOUVEAU : nombre total de lignes
-    // d'historique dans la banque.
     std::size_t nombreOperations() const;
 };
 
