@@ -142,20 +142,54 @@ std::size_t Banque::nombreComptes() const {
 }
 
 // ==========================================
-// NOUVEAU : CONSULTER TOUS LES COMPTES
+// CONSULTER TOUS LES COMPTES
 // ==========================================
 
 std::vector<Compte> Banque::consulterTousLesComptes() const {
 
-    // NOUVEAU : renvoyer une COPIE du vector.
-    //
-    // Aucun Compte interne n'est modifie.
-    // Les comptes restent dans leur ordre
-    // d'insertion dans la banque.
-    //
-    // Si aucun compte n'a ete cree,
-    // le resultat est un vector vide.
+    // Retourner une copie des comptes.
+    // Leur ordre d'insertion est conserve.
     return comptes;
+}
+
+// ==========================================
+// NOUVEAU : EXPORTER L'ETAT COMPLET
+// ==========================================
+
+EtatBanque Banque::exporterEtat() const {
+
+    // NOUVEAU : creer un instantane local.
+    //
+    // Cet objet est independant des
+    // collections internes de Banque.
+    EtatBanque etat;
+
+    // NOUVEAU : copier tous les comptes,
+    // dans leur ordre de creation.
+    etat.comptes = comptes;
+
+    // NOUVEAU : copier l'historique GLOBAL.
+    //
+    // Contrairement a consulterHistorique(),
+    // aucun filtrage par compte n'est effectue.
+    etat.operations = historique;
+
+    // NOUVEAU : conserver le compteur exact
+    // qui servira au prochain compte.
+    etat.prochainNumeroCompte = prochainNumero;
+
+    // NOUVEAU : conserver le compteur exact
+    // qui servira a la prochaine operation.
+    etat.prochainNumeroOperation =
+        prochainNumeroOperation;
+
+    // NOUVEAU : retourner l'instantane.
+    //
+    // Aucun compte, solde ou historique
+    // de la banque n'a ete modifie.
+    //
+    // Aucun fichier n'est cree.
+    return etat;
 }
 
 // ==========================================
@@ -401,7 +435,7 @@ bool Banque::virer(
 
     if (!destination->deposer(montantCentimes)) {
 
-        // Protection de secours de la phase 3.6.
+        // Protection de secours pour le virement.
         source->deposer(montantCentimes);
 
         return false;

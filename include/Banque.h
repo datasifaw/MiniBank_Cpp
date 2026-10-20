@@ -10,6 +10,10 @@
 #include "Compte.h"
 #include "Operation.h"
 
+// NOUVEAU : definition de l'instantane
+// complet utilise pour la persistance.
+#include "EtatBanque.h"
+
 class Banque {
 
 private:
@@ -17,20 +21,20 @@ private:
     // Comptes conserves en memoire.
     std::vector<Compte> comptes;
 
-    // Prochain numero pour les identifiants MB-xxxx.
+    // Prochain numero des comptes automatiques.
     std::uint64_t prochainNumero = 1;
 
     // Generer un identifiant disponible.
     std::string genererIdentifiant();
 
     // ==========================================
-    // HISTORIQUE DES OPERATIONS BANCAIRES
+    // HISTORIQUE DES OPERATIONS
     // ==========================================
 
-    // Lignes d'historique conservees en memoire.
+    // Lignes d'historique en memoire.
     std::vector<Operation> historique;
 
-    // Numero de la prochaine ligne.
+    // Numero de la prochaine operation.
     std::uint64_t prochainNumeroOperation = 1;
 
     // Preparer la place et la numerotation
@@ -67,17 +71,27 @@ public:
     std::size_t nombreComptes() const;
 
     // ==========================================
-    // NOUVEAU : CONSULTER TOUS LES COMPTES
+    // CONSULTATION DE TOUS LES COMPTES
     // ==========================================
 
-    // NOUVEAU : retourner une copie des comptes.
-    //
-    // L'ordre de creation est conserve.
-    // Si la banque est vide, le vector retourne
-    // est egalement vide.
-    //
-    // La methode ne modifie pas la banque.
+    // Retourner une copie independante
+    // des comptes dans leur ordre de creation.
     std::vector<Compte> consulterTousLesComptes() const;
+
+    // ==========================================
+    // NOUVEAU : EXPORT DE L'ETAT BANCAIRE
+    // ==========================================
+
+    // NOUVEAU : produire un instantane complet
+    // contenant les comptes, l'historique
+    // global et les deux compteurs.
+    //
+    // La methode est en lecture seule.
+    // Elle ne sauvegarde rien sur disque.
+    //
+    // La copie retournee est independante
+    // des donnees internes de Banque.
+    EtatBanque exporterEtat() const;
 
     // ==========================================
     // DEPOT AVEC HISTORIQUE
