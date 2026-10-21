@@ -157,5 +157,17 @@ Aucune commande de commit ou de push n'est nécessaire pour compiler ou utiliser
 - Conservation limitée de l'historique des sauvegardes : un principal et, au plus, une sauvegarde précédente protégée `.bak`.
 
 ---
+## 🚀 Évolutions envisagées
+
+MiniBank C++ v1.0.0 constitue une première version stable du projet. Plusieurs améliorations pourraient être envisagées à l'avenir :
+
+- **Relevés bancaires :** export de l'historique des opérations au format CSV.
+- **Interface graphique :** développement d'une interface Windows pour faciliter l'utilisation de l'application.
+- **Sécurité :** amélioration de la protection des données et de la gestion des sauvegardes.
+- **Gestion avancée :** recherche d'opérations, filtres par date et statistiques sur les comptes.
+- **Tests automatisés :** extension de la couverture des tests pour les futures fonctionnalités.
+
+Ces évolutions représentent des pistes possibles et ne constituent pas des fonctionnalités disponibles dans la version v1.0.0.
+
 
 **MiniBank C++ — apprentissage de la programmation orientée objet, de la validation des données et de la persistance sécurisée en C++17.**
