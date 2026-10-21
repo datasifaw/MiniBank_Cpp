@@ -13,6 +13,7 @@
 #include "Montant.h"
 #include "Operation.h"
 
+#include "MenuPersistance.h"
 int main() {
 
     // ==========================================
@@ -979,11 +980,10 @@ int main() {
             // ======================================
 
             case 8: {
-
-                std::cout << "Fonctionnalite a venir !"
-                          << std::endl;
-                break;
-            }
+            // NOUVEAU : ouvrir le sous-menu sans toucher aux autres options.
+            menu_persistance::afficher(banque);
+            break;
+        }
 
             default: {
 
