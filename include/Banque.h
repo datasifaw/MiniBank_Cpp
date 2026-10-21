@@ -1,4 +1,3 @@
-
 #ifndef BANQUE_H
 #define BANQUE_H
 
@@ -13,6 +12,26 @@
 // NOUVEAU : definition de l'instantane
 // complet utilise pour la persistance.
 #include "EtatBanque.h"
+
+// ==========================================
+// NOUVEAU : RESULTAT DE RESTAURATION
+// ==========================================
+
+enum class StatutRestauration {
+    Succes,
+    EtatInvalide,
+    RessourcesInsuffisantes,
+    ErreurInterne
+};
+
+struct ResultatRestauration {
+    StatutRestauration statut = StatutRestauration::EtatInvalide;
+    std::string message;
+
+    bool estUnSucces() const {
+        return statut == StatutRestauration::Succes;
+    }
+};
 
 class Banque {
 
@@ -92,6 +111,14 @@ public:
     // La copie retournee est independante
     // des donnees internes de Banque.
     EtatBanque exporterEtat() const;
+
+    // NOUVEAU : restauration atomique en memoire.
+    // Les comptes, l'historique et les compteurs sont
+    // tous remplaces, ou tous conserves en cas d'echec.
+    // Aucun acces disque ; aucun recours automatique a .bak.
+    ResultatRestauration restaurerEtat(
+        const EtatBanque& etat
+    );
 
     // ==========================================
     // DEPOT AVEC HISTORIQUE
