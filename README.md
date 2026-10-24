@@ -2,9 +2,10 @@
 
 MiniBank est une application bancaire pédagogique en **C++17**, exécutée en console sous **Windows**. Elle permet de gérer des comptes et des mouvements bancaires, de consulter les informations enregistrées en mémoire, puis de sauvegarder ou restaurer l'état de la banque.
 
-> **Projet pédagogique :** MiniBank ne traite pas de véritables transactions bancaires et n'est pas destiné à stocker des informations bancaires réelles.
+> **Projet pédagogique :** MiniBank ne traite pas de véritables transactions bancaires et n'est pas destiné à stocker des informations bancaires réelles
 
 ## Fonctionnalités
+
 
 - Création et recherche de comptes ; consultation des comptes.
 - Gestion de soldes exprimés en **centimes** pour éviter les imprécisions des nombres flottants.
@@ -13,6 +14,7 @@ MiniBank est une application bancaire pédagogique en **C++17**, exécutée en c
 - Export et restauration de l'état complet de la banque : comptes, historique et compteurs d'identifiants.
 - Sauvegarde sur disque et chargement depuis le fichier principal.
 - Récupération **explicite** d'une sauvegarde précédente `.bak`.
+- 
 
 ## Environnement
 
