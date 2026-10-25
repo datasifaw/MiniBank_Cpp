@@ -1,4 +1,4 @@
-# MiniBank C++ 🏦
+# MiniBank C++ :  🏦
 
 MiniBank est une application bancaire pédagogique en **C++17**, exécutée en console sous **Windows**. Elle permet de gérer des comptes et des mouvements bancaires, de consulter les informations enregistrées en mémoire, puis de sauvegarder ou restaurer l'état de la banque.
 
