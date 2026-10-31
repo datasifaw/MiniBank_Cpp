@@ -4,7 +4,7 @@ MiniBank est une application bancaire pédagogique en **C++17**, exécutée en c
 
 > **Projet pédagogique :** MiniBank ne traite pas de véritables transactions bancaires et n'est pas destiné à stocker des informations bancaires réelles
 
-## Fonctionnalités
+## Fonctionnalités :
 
 
 - Création et recherche de comptes ; consultation des comptes.
